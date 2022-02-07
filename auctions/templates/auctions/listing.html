@@ -1,0 +1,58 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %} Listing {% endblock %}
+
+{% block body %}
+    {% if is_authenticated %}
+        {% if watchList %}
+            <a href="{% url 'changeWatchListStatus' id=auction.id %}">Remove from watch list</a>
+        {% else %}
+            <a href="{% url 'changeWatchListStatus' id=auction.id %}">Add to watch list</a>
+        {% endif %}
+    {% endif %}
+
+
+
+    {% if auction %}
+        <h1>Listing: {{auction.name}}</h1>
+
+        <img src="{{auction.photo}}" width="30%" alt="No photo">
+
+        <p>{{ auction.description }}</p>
+
+        <h5>${{currentBid}}</h5>
+
+        <p>{{ numberOfBid }} bid(s) so far. Your bid is the current bid</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: red;">{{message}}</p>
+            {% endfor %}
+        {% endif %}
+        
+
+        {% if is_authenticated %}
+            <form action="{% url 'placeBid' auction_id=auction.id %}" method="post">
+                {% csrf_token %}
+                <input name="bid" type="number" placeholder="Bid" style="width: 90%; padding: 12px 20px;margin: 8px 0;" required>
+                <br>
+                <button style="background-color:#4CAF50; color:white;">Place bid</button>
+            </form>
+        {% endif %}
+
+        <br>
+        <h4>Details</h4>
+        <ul>
+            <li>Listed by: {{auction.posted_by}}</li>
+            <li>Category: {{auction.category}} </li>
+        </ul>
+    
+    {% else %}
+
+        Auction not found!
+
+    {% endif %}
+
+
+
+{% endblock %}
